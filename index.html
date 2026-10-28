@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LATS Developer Dashboard</title>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">L</div>
+        <div>
+          <strong>LATS</strong>
+          <small>Developer Console</small>
+        </div>
+      </div>
+
+      <p class="nav-label">WORKSPACE</p>
+      <button class="nav active" data-view="overview">Overview</button>
+      <button class="nav" data-view="applications">Applications</button>
+      <button class="nav" data-view="api">API Inspector</button>
+      <button class="nav" data-view="workflow-test" type="button">Workflow Test</button>
+
+      <div class="sidebar-bottom">
+        <span class="status-dot"></span>
+        Local development
+        <small>127.0.0.1:5173</small>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">LENDING MANAGEMENT SYSTEM</p>
+          <h1 id="page-title">Developer Overview</h1>
+        </div>
+        <div class="account">
+          <span id="account-label">Not signed in</span>
+          <button id="logout" class="button secondary" hidden>Log out</button>
+        </div>
+      </header>
+
+      <section id="login-panel" class="panel login-panel">
+        <div class="section-heading">
+          <div>
+            <h2>Connect to LATS</h2>
+            <p>Sign in using an existing development account.</p>
+          </div>
+          <span class="pill">LOCAL</span>
+        </div>
+
+        <form id="login-form">
+          <label>Email
+            <input name="email" type="email" placeholder="sales@lats.test"
+              autocomplete="username" required>
+          </label>
+          <label>Password
+            <input name="password" type="password"
+              autocomplete="current-password" required>
+          </label>
+          <button class="button primary" type="submit">Sign in</button>
+        </form>
+        <p class="muted">Use your existing test credentials. No account is created here.</p>
+      </section>
+
+      <div id="message" role="status" class="message" hidden></div>
+
+      <section id="workspace" hidden>
+        <section id="view-overview" class="view">
+          <div class="section-heading">
+            <div>
+              <h2>System status</h2>
+              <p>Check connectivity and inspect the current session.</p>
+            </div>
+            <button id="refresh-all" class="button secondary">Refresh</button>
+          </div>
+
+          <div class="stats">
+            <article class="stat-card">
+              <span>Backend health</span>
+              <strong id="health-value">Not checked</strong>
+              <small>GET /health</small>
+            </article>
+            <article class="stat-card">
+              <span>Authenticated user</span>
+              <strong id="user-value">—</strong>
+              <small id="role-value">No role loaded</small>
+            </article>
+            <article class="stat-card">
+              <span>Visible applications</span>
+              <strong id="app-count">—</strong>
+              <small>Based on your actual permissions</small>
+            </article>
+          </div>
+          
+          <section class="panel">
+            <h2>Loan Workflow Summary</h2>
+            <p>Counts are based on applications currently loaded for your account.</p>
+            <div id="status-summary" class="stats">
+              <p>Load applications to calculate status counts.</p>
+            </div>
+          </section>
+
+          <article class="panel">
+            <h2>Authenticated identity</h2>
+            <div id="user-details" class="details muted">Sign in to inspect your identity.</div>
+          </article>
+
+          <article class="panel">
+            <div class="section-heading">
+              <div>
+                <h2>Granted permissions</h2>
+                <p>Returned by the backend, not simulated by the dashboard.</p>
+              </div>
+            </div>
+            <div id="permissions" class="permissions"></div>
+          </article>
+        </section>
+
+        <section id="view-applications" class="view" hidden>
+          <div class="section-heading">
+            <div>
+              <h2>Loan applications</h2>
+              <p>Read-only access to applications visible to your account.</p>
+            </div>
+            <button id="refresh-apps" class="button primary">Load applications</button>
+          </div>
+
+          <form id="filter-form" class="panel filter-form">
+            <label>Status
+              <select name="status">
+                <option value="">All visible statuses</option>
+                <option>DRAFT</option>
+                <option>SUBMITTED</option>
+                <option>HOD_IN_REVIEW</option>
+                <option>HOD_QUERY</option>
+                <option>HOD_APPROVED</option>
+                <option>HOD_REJECTED</option>
+                <option>CREDIT_IN_REVIEW</option>
+                <option>CREDIT_QUERY</option>
+                <option>CREDIT_APPROVED</option>
+                <option>CREDIT_DECLINED</option>
+                <option>IC_IN_REVIEW</option>
+                <option>IC_QUERY</option>
+                <option>IC_APPROVED</option>
+                <option>IC_REJECTED</option>
+                <option>PENDING_MD</option>
+                <option>MD_APPROVED</option>
+                <option>MD_REJECTED</option>
+                <option>PENDING_DISBURSEMENT</option>
+                <option>DISBURSED</option>
+                <option>WITHDRAWN</option>
+              </select>
+            </label>
+            <label>Branch
+              <input name="branch" placeholder="Optional branch filter">
+            </label>
+            <button class="button secondary" type="submit">Apply filters</button>
+          </form>
+
+          <article class="panel">
+            <div class="section-heading">
+              <div>
+                <h2>Results</h2>
+                <p id="results-label">Applications have not been loaded.</p>
+              </div>
+            </div>
+            <div id="application-results" class="results muted">
+              Sign in, then load applications.
+            </div>
+          </article>
+        </section>
+        
+        <section id="view-workflow-test" class="view" hidden>
+          <div class="section-heading">
+            <div>
+              <h2>Workflow Test</h2>
+              <p>Create one synthetic test application. Do not use real customer data.</p>
+            </div>
+                    <button
+          class="button primary"
+          type="button"
+          onclick="window.dispatchEvent(new Event('lats-submit-synthetic-test'))"
+        >
+          Submit LN-2026-000014 for HOD review
+        </button>
+          </div>
+
+          
+          <div class="section-heading" style="margin-top: 16px;">
+            <button
+              class="button primary"
+              id="send-hod-query"
+              type="button"
+            >
+              Send HOD Query for LN-2026-000014
+            </button>
+          </div>
+
+
+          
+          <div class="section-heading" style="margin-top: 16px;">
+            <button
+              class="button primary"
+              id="resolve-hod-query"
+              type="button"
+            >
+              Resolve HOD Query for LN-2026-000014
+            </button>
+          </div>
+
+
+          <article class="panel">
+            <form id="workflow-test-form">
+              <label>Branch
+                <input name="branch" value="Main" required />
+              </label>
+
+              <label>Product name
+                <input name="productName" value="LATS Workflow Test" required />
+              </label>
+
+              <label>Customer name
+                <input name="customerName"
+                  value="Synthetic Workflow Test - Do Not Use for Lending" required />
+              </label>
+
+              <label>Customer phone / test identifier
+                <input name="customerPhone" value="TEST-WORKFLOW-0001" required />
+              </label>
+
+              <label>Requested amount
+                <input name="requestedAmount" type="number" min="1" value="1000" required />
+              </label>
+
+              <label>Tenor (months)
+                <input name="tenorMonths" type="number" min="1" step="1" value="1" required />
+              </label>
+
+              <label>Purpose
+                <textarea name="purpose" required>Synthetic test record for workflow verification only; no real customer or disbursement.</textarea>
+              </label>
+
+              <button class="button primary" type="submit">Create synthetic test application</button>
+            </form>
+          </article>
+        </section>
+
+        <section id="view-api" class="view" hidden>
+          <div class="section-heading">
+            <div>
+              <h2>API Inspector</h2>
+              <p>Send read-only GET requests through the local proxy.</p>
+            </div>
+          </div>
+
+          <article class="panel">
+            <form id="api-form">
+              <label>Endpoint
+                <select name="endpoint">
+                  <option value="/health">GET /health</option>
+                  <option value="/api/v1/auth/me">GET /api/v1/auth/me</option>
+                  <option value="/api/v1/applications">GET /api/v1/applications</option>
+                  <option value="/api/v1/admin/users">GET /api/v1/admin/users</option>
+                </select>
+              </label>
+              <button class="button primary" type="submit">Send GET request</button>
+            </form>
+            <p class="muted">Requests requiring authentication use your current session. Admin endpoints may return 403 for your role.</p>
+          </article>
+
+          <article class="panel">
+            <div class="section-heading">
+              <h2>Last response</h2>
+              <span id="response-status" class="pill">No request yet</span>
+            </div>
+            <pre id="response-body">Response data will appear here.</pre>
+          </article>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
